@@ -90,6 +90,9 @@ public sealed class DownloadService
         else
         {
             var message = stderrBuffer.Count > 0 ? string.Join('\n', stderrBuffer[^Math.Min(5, stderrBuffer.Count)..]) : "yt-dlp exited with an error";
+            var hint = CookieArgs.DescribeCookieFailureHint(message);
+            if (hint is not null)
+                message = $"{message}\n{hint}";
             Finished?.Invoke(this, (request.TaskId, false, message));
         }
     }

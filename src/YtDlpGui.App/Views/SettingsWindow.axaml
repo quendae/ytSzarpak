@@ -93,8 +93,8 @@
                               HorizontalAlignment="Stretch" />
                 </StackPanel>
 
-                <StackPanel Spacing="6" IsVisible="{Binding SelectedBrowser, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static vm:SettingsViewModel.NoBrowser}}">
-                    <TextBlock Text="Or use a cookies file" Classes="muted" />
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Or use a cookies file (recommended if browser sign-in fails)" Classes="muted" />
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                         <TextBox Grid.Column="0"
                                  Text="{Binding CookiesFilePath}"
@@ -104,6 +104,8 @@
                                 Content="Browse…"
                                 Command="{Binding BrowseCookiesFileCommand}" />
                     </Grid>
+                    <TextBlock Classes="hint" TextWrapping="Wrap"
+                               Text="If set, this file is always used instead of the browser above. Chrome in particular can fail with 'could not copy cookie database' while it's running (a known yt-dlp/Chrome issue on Windows) — export cookies.txt with a browser extension and point here instead." />
                 </StackPanel>
             </StackPanel>
 

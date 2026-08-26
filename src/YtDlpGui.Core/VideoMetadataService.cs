@@ -25,7 +25,13 @@ public sealed class VideoMetadataService
         var (exitCode, stdout, stderr) = await RunAsync(args.ToArray(), ct);
 
         if (exitCode != 0 || string.IsNullOrWhiteSpace(stdout))
-            throw new InvalidOperationException($"yt-dlp failed to fetch video info: {stderr}");
+        {
+            var hint = CookieArgs.DescribeCookieFailureHint(stderr);
+            var message = hint is null
+                ? $"yt-dlp failed to fetch video info: {stderr}"
+                : $"yt-dlp failed to fetch video info: {stderr}\n{hint}";
+            throw new InvalidOperationException(message);
+        }
 
         using var doc = JsonDocument.Parse(stdout);
         var root = doc.RootElement;

@@ -40,15 +40,20 @@ public partial class SettingsViewModel : ViewModelBase
     public partial bool IsFfmpegDetected { get; set; }
 
     /// <summary>
-    /// One of <see cref="BrowserOptions"/>. Reusing the login already sitting in a browser is the
-    /// only sign-in method that actually works against YouTube — yt-dlp's old direct
+    /// One of <see cref="BrowserOptions"/>. Reusing the login already sitting in a browser is one
+    /// of two sign-in methods that actually work against YouTube — yt-dlp's old direct
     /// username/password login gets stopped by Google's captcha/2FA wall, so this app never asks
-    /// for a password. Takes priority over <see cref="CookiesFilePath"/> when both are set.
+    /// for a password. Ignored whenever <see cref="CookiesFilePath"/> is set (see there for why).
     /// </summary>
     [ObservableProperty]
     public partial string SelectedBrowser { get; set; } = NoBrowser;
 
-    /// <summary>Path to a Netscape-format cookies.txt, used only when <see cref="SelectedBrowser"/> is None.</summary>
+    /// <summary>
+    /// Path to a Netscape-format cookies.txt. Takes priority over <see cref="SelectedBrowser"/>
+    /// whenever set: live browser extraction has to copy the browser's cookie database out from
+    /// under it, which fails outright on some Chrome/Windows combinations (yt-dlp/yt-dlp#7271)
+    /// because Chrome keeps it locked while running — a manually exported file has no such issue.
+    /// </summary>
     [ObservableProperty]
     public partial string? CookiesFilePath { get; set; }
 

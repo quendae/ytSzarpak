@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
@@ -57,8 +58,12 @@ public partial class MainWindowViewModel : ViewModelBase
         _downloadService.Finished += OnDownloadFinished;
 
         RefreshSignInStatus();
+        VersionText = $"YTSzarpak {GetAppVersion()}";
         _initTask = InitializeAsync();
     }
+
+    private static string GetAppVersion() =>
+        Assembly.GetExecutingAssembly().GetName().Version is { } v ? $"{v.Major}.{v.Minor}.{v.Build}" : "dev";
 
     public ObservableCollection<QueueItemViewModel> Queue { get; } = new();
 
@@ -124,6 +129,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     public partial string? SignInStatusText { get; set; }
 
+    [ObservableProperty]
+    public partial string VersionText { get; set; } = string.Empty;
+
     // --- Bootstrap -------------------------------------------------------------------------
 
     private async Task InitializeAsync()
@@ -168,7 +176,21 @@ public partial class MainWindowViewModel : ViewModelBase
         if (!IsFfmpegAvailable)
             await AcquireFfmpegAsync(ct).ConfigureAwait(true);
 
+        _ = RefreshVersionTextAsync(ct);
         _ = CheckForUpdatesAsync(ct);
+    }
+
+    private async Task RefreshVersionTextAsync(CancellationToken ct)
+    {
+        try
+        {
+            var ytDlpVersion = await _binaryManager.GetLocalVersionAsync(ct).ConfigureAwait(true);
+            if (!string.IsNullOrWhiteSpace(ytDlpVersion))
+                VersionText = $"{VersionText} · yt-dlp {ytDlpVersion}";
+        }
+        catch (OperationCanceledException)
+        {
+        }
     }
 
     /// <summary>
@@ -212,10 +234,10 @@ public partial class MainWindowViewModel : ViewModelBase
     public void RefreshSignInStatus()
     {
         var settings = _settingsService.Current;
-        SignInStatusText = !string.IsNullOrWhiteSpace(settings.YouTubeCookiesFromBrowser)
-            ? $"Signed in via {settings.YouTubeCookiesFromBrowser[0].ToString().ToUpperInvariant()}{settings.YouTubeCookiesFromBrowser[1..]}"
-            : !string.IsNullOrWhiteSpace(settings.YouTubeCookiesFilePath)
-                ? "Signed in via a cookies file"
+        SignInStatusText = !string.IsNullOrWhiteSpace(settings.YouTubeCookiesFilePath)
+            ? "Signed in via a cookies file"
+            : !string.IsNullOrWhiteSpace(settings.YouTubeCookiesFromBrowser)
+                ? $"Signed in via {settings.YouTubeCookiesFromBrowser[0].ToString().ToUpperInvariant()}{settings.YouTubeCookiesFromBrowser[1..]}"
                 : null;
     }
 

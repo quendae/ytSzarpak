@@ -43,6 +43,11 @@
                 </StackPanel>
             </Border>
 
+            <!-- Footer -->
+            <Border DockPanel.Dock="Bottom" Padding="20,8">
+                <TextBlock Text="{Binding VersionText}" Classes="hint" HorizontalAlignment="Center" />
+            </Border>
+
             <!-- Body -->
             <ScrollViewer>
                 <Grid Margin="24" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="18" MaxWidth="820" HorizontalAlignment="Stretch">
