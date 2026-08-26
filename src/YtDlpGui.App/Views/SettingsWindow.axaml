@@ -1,0 +1,128 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:YtDlpGui.App.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="640"
+        x:Class="YtDlpGui.App.Views.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Title="Settings"
+        Width="520"
+        Height="640"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+
+    <ScrollViewer>
+        <StackPanel Margin="24" Spacing="22">
+
+            <!-- Downloads -->
+            <StackPanel Spacing="14">
+                <TextBlock Text="DOWNLOADS" Classes="eyebrow" />
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Output folder" Classes="muted" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding OutputDirectory}"
+                                 PlaceholderText="Select download folder" />
+                        <Button Grid.Column="1"
+                                Classes="ghost"
+                                Content="Browse…"
+                                Command="{Binding BrowseOutputDirectoryCommand}" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Max concurrent downloads" Classes="muted" />
+                    <NumericUpDown Value="{Binding MaxConcurrentDownloads}"
+                                   Minimum="1"
+                                   Maximum="10"
+                                   Width="140"
+                                   HorizontalAlignment="Left" />
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Filename template" Classes="muted" />
+                    <TextBox Text="{Binding FilenameTemplate}"
+                             PlaceholderText="%(title)s [%(id)s].%(ext)s" />
+                    <TextBlock Text="Uses yt-dlp template syntax, e.g. %(title)s.%(ext)s" Classes="hint" />
+                </StackPanel>
+            </StackPanel>
+
+            <Border Height="1" Background="{StaticResource BrushSteelDim}" />
+
+            <!-- FFmpeg -->
+            <StackPanel Spacing="14">
+                <TextBlock Text="FFMPEG" Classes="eyebrow" />
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="{Binding FfmpegStatusMessage}"
+                               Foreground="{StaticResource BrushSuccess}"
+                               IsVisible="{Binding IsFfmpegDetected}" />
+                    <TextBlock Text="{Binding FfmpegStatusMessage}"
+                               Foreground="{StaticResource BrushWarning}"
+                               IsVisible="{Binding !IsFfmpegDetected}" />
+
+                    <TextBlock Text="Path override" Classes="muted" Margin="0,4,0,0" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding FfmpegPathOverride}"
+                                 PlaceholderText="Auto-detected — override only if needed" />
+                        <Button Grid.Column="1"
+                                Classes="ghost"
+                                Content="Browse…"
+                                Command="{Binding BrowseFfmpegPathCommand}" />
+                    </Grid>
+                    <TextBlock Text="A build is downloaded automatically if none is found — this is only for pointing at a specific install."
+                               Classes="hint" />
+                </StackPanel>
+            </StackPanel>
+
+            <Border Height="1" Background="{StaticResource BrushSteelDim}" />
+
+            <!-- YouTube sign-in -->
+            <StackPanel Spacing="14">
+                <TextBlock Text="YOUTUBE SIGN-IN" Classes="eyebrow" />
+                <TextBlock Classes="hint"
+                           Text="Some videos require being signed in. YTSzarpak never asks for a password — it reuses the login already sitting in a browser you're signed into on this computer." />
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Sign in via browser" Classes="muted" />
+                    <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.BrowserOptions}"
+                              SelectedItem="{Binding SelectedBrowser}"
+                              HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <StackPanel Spacing="6" IsVisible="{Binding SelectedBrowser, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static vm:SettingsViewModel.NoBrowser}}">
+                    <TextBlock Text="Or use a cookies file" Classes="muted" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding CookiesFilePath}"
+                                 PlaceholderText="Path to a Netscape-format cookies.txt" />
+                        <Button Grid.Column="1"
+                                Classes="ghost"
+                                Content="Browse…"
+                                Command="{Binding BrowseCookiesFileCommand}" />
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+
+            <Border Height="1" Background="{StaticResource BrushSteelDim}" />
+
+            <!-- Actions -->
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                <Button Content="Cancel"
+                        Classes="ghost"
+                        Command="{Binding CancelCommand}"
+                        Width="90"
+                        IsCancel="True" />
+                <Button Content="Save"
+                        Classes="primary"
+                        Command="{Binding SaveCommand}"
+                        Width="90"
+                        IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+
+</Window>

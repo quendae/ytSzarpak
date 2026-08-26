@@ -1,0 +1,17 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="YtDlpGui.App.App"
+             xmlns:local="using:YtDlpGui.App"
+             RequestedThemeVariant="Dark">
+             <!-- YTSzarpak is a dark-only brand (see Styles/Theme.axaml) — always request Dark
+                  as the Fluent base so uncovered controls fall back to dark chrome, not light. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://YTSzarpak/Styles/Theme.axaml" />
+    </Application.Styles>
+</Application>
