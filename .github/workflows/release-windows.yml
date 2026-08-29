@@ -23,6 +23,20 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Read application version
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content 'src/YtDlpGui.App/YtDlpGui.App.csproj'
+          $version = [string]$project.Project.PropertyGroup.Version
+          if ([string]::IsNullOrWhiteSpace($version)) { throw 'Could not read application version.' }
+          "APP_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "RELEASE_TAG=v$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          Write-Host "Building YTSzarpak v$version"
+
+      - name: Run tests
+        shell: pwsh
+        run: dotnet test src/YtDlpGui.Tests/YtDlpGui.Tests.csproj -c Release
+
       - name: Publish Windows x64
         shell: pwsh
         run: |
@@ -35,56 +49,92 @@ jobs:
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -o publish/output/win-x64
 
-      - name: Verify executable and create ZIP
+      - name: Create portable ZIP
         shell: pwsh
         run: |
-          $exe = Get-ChildItem publish/output/win-x64 -Filter '*.exe' | Select-Object -First 1
-          if (-not $exe) { throw 'YTSzarpak executable was not produced.' }
+          $exe = 'publish/output/win-x64/YTSzarpak.exe'
+          if (-not (Test-Path $exe)) { throw 'YTSzarpak executable was not produced.' }
 
-          $zip = 'YTSzarpak-v1.0.1-win-x64.zip'
+          $zip = "YTSzarpak-v$env:APP_VERSION-win-x64-portable.zip"
           if (Test-Path $zip) { Remove-Item $zip -Force }
           Compress-Archive -Path 'publish/output/win-x64/*' -DestinationPath $zip -CompressionLevel Optimal
-
-          $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant()
-          "$hash  $zip" | Set-Content 'YTSzarpak-v1.0.1-win-x64.sha256'
-
           Write-Host "Created $zip"
-          Write-Host "SHA256: $hash"
 
-      - name: Create or update GitHub Release
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $iscc)) { throw "Inno Setup compiler not found: $iscc" }
+          & $iscc "/DMyAppVersion=$env:APP_VERSION" 'installer/YTSzarpak.iss'
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with exit code $LASTEXITCODE" }
+
+          $installer = "publish/installer/YTSzarpak-v$env:APP_VERSION-Setup.exe"
+          if (-not (Test-Path $installer)) { throw 'Installer was not produced.' }
+          Copy-Item $installer (Split-Path $installer -Leaf) -Force
+
+      - name: Create SHA256 checksums
+        shell: pwsh
+        run: |
+          $files = @(
+            "YTSzarpak-v$env:APP_VERSION-Setup.exe",
+            "YTSzarpak-v$env:APP_VERSION-win-x64-portable.zip"
+          )
+
+          foreach ($file in $files) {
+            if (-not (Test-Path $file)) { throw "Missing release asset: $file" }
+            $hash = (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$hash  $file" | Set-Content "$file.sha256"
+            Write-Host "$file SHA256: $hash"
+          }
+
+      - name: Create GitHub Release
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = 'v1.0.1'
-          $zip = 'YTSzarpak-v1.0.1-win-x64.zip'
-          $sha = 'YTSzarpak-v1.0.1-win-x64.sha256'
+          $tag = $env:RELEASE_TAG
+          $installer = "YTSzarpak-v$env:APP_VERSION-Setup.exe"
+          $portable = "YTSzarpak-v$env:APP_VERSION-win-x64-portable.zip"
+          $assets = @($installer, "$installer.sha256", $portable, "$portable.sha256")
+
+          $notes = @"
+          ## YTSzarpak v$env:APP_VERSION
+
+          ### Downloads
+          - **Installer:** `$installer` — recommended for normal Windows installation. Installs per-user, adds a Start menu shortcut and can optionally add a desktop shortcut. No administrator rights are required by default.
+          - **Portable:** `$portable` — download, extract and run `YTSzarpak.exe`.
+
+          ### Changes
+          - Added a proper Windows installer with uninstall support.
+          - Portable ZIP remains available for users who prefer a no-install version.
+          - yt-dlp is now downloaded and updated from the official **nightly** build channel.
+          - The application remains self-contained; a separate .NET or Python installation is not required.
+          - yt-dlp and FFmpeg are managed by YTSzarpak at runtime.
+          "@
 
           gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
           if ($LASTEXITCODE -eq 0) {
-            gh release upload $tag $zip $sha --clobber --repo $env:GITHUB_REPOSITORY
+            gh release upload $tag @assets --clobber --repo $env:GITHUB_REPOSITORY
+            $notes | gh release edit $tag --repo $env:GITHUB_REPOSITORY --title "YTSzarpak v$env:APP_VERSION" --notes-file -
           } else {
-            gh release create $tag $zip $sha `
+            $notes | gh release create $tag @assets `
               --repo $env:GITHUB_REPOSITORY `
               --target $env:GITHUB_SHA `
-              --title 'YTSzarpak v1.0.1' `
-              --notes @'
-          First packaged Windows release of YTSzarpak.
-
-          - Windows x64, self-contained
-          - No separate .NET or Python installation required
-          - Includes the refreshed desktop interface
-          - yt-dlp and FFmpeg are managed by the app at runtime
-
-          Download the ZIP, extract it and run YTSzarpak.exe.
-          '@
+              --title "YTSzarpak v$env:APP_VERSION" `
+              --notes-file -
           }
 
-      - name: Upload workflow artifact
+      - name: Upload workflow artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: YTSzarpak-v1.0.1-win-x64
+          name: YTSzarpak-v${{ env.APP_VERSION }}-windows
           path: |
-            YTSzarpak-v1.0.1-win-x64.zip
-            YTSzarpak-v1.0.1-win-x64.sha256
+            YTSzarpak-v${{ env.APP_VERSION }}-Setup.exe
+            YTSzarpak-v${{ env.APP_VERSION }}-Setup.exe.sha256
+            YTSzarpak-v${{ env.APP_VERSION }}-win-x64-portable.zip
+            YTSzarpak-v${{ env.APP_VERSION }}-win-x64-portable.zip.sha256
           if-no-files-found: error
