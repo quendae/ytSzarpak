@@ -14,65 +14,87 @@
         Title="YTSzarpak">
 
     <Panel>
-
         <DockPanel LastChildFill="True">
 
-            <!-- Chrome bar -->
-            <Border DockPanel.Dock="Top" Background="{StaticResource BrushPanel}">
-                <StackPanel>
-                    <Grid Margin="20,14" ColumnDefinitions="Auto,*,Auto">
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                            <Image Source="/Assets/icon.png" Width="30" Height="30" />
-                            <TextBlock Text="YTSZARPAK" Classes="wordmark" FontSize="18" VerticalAlignment="Center" />
-                        </StackPanel>
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding SignInStatusText}"
-                                   IsVisible="{Binding SignInStatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                   Classes="muted"
-                                   HorizontalAlignment="Center"
+            <!-- App bar -->
+            <Border DockPanel.Dock="Top"
+                    Background="{StaticResource BrushTopBar}"
+                    BorderBrush="{StaticResource BrushBorder}"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="20,13" ColumnDefinitions="Auto,*,Auto">
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal"
+                                Spacing="10"
+                                VerticalAlignment="Center">
+                        <Image Source="/Assets/icon.png" Width="30" Height="30" />
+                        <TextBlock Text="YTSzarpak"
+                                   Classes="brand"
                                    VerticalAlignment="Center" />
-                        <Button Grid.Column="2"
-                                Classes="icon"
-                                Content="&#x2699;"
-                                FontSize="16"
-                                ToolTip.Tip="Settings"
-                                Command="{Binding OpenSettingsCommand}" />
-                    </Grid>
-                    <!-- Signal line: the thin glow underscoring the wordmark in the brand sheet -->
-                    <Border Height="2" Background="{StaticResource BrushSignalCyan}" Opacity="0.6" />
-                </StackPanel>
+                    </StackPanel>
+
+                    <Border Grid.Column="1"
+                            Classes="status-chip"
+                            IsVisible="{Binding SignInStatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding SignInStatusText}"
+                                   Classes="muted"
+                                   FontSize="11" />
+                    </Border>
+
+                    <Button Grid.Column="2"
+                            Classes="icon"
+                            Content="&#x2699;"
+                            FontSize="16"
+                            ToolTip.Tip="Settings"
+                            Command="{Binding OpenSettingsCommand}" />
+                </Grid>
             </Border>
 
             <!-- Footer -->
             <Border DockPanel.Dock="Bottom" Padding="20,8">
-                <TextBlock Text="{Binding VersionText}" Classes="hint" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding VersionText}"
+                           Classes="hint"
+                           HorizontalAlignment="Center" />
             </Border>
 
             <!-- Body -->
             <ScrollViewer>
-                <Grid Margin="24" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="18" MaxWidth="820" HorizontalAlignment="Stretch">
+                <Grid Margin="28,24,28,18"
+                      RowDefinitions="Auto,Auto,Auto,Auto"
+                      RowSpacing="18"
+                      MaxWidth="840"
+                      HorizontalAlignment="Stretch">
 
-                    <!-- Grab bar -->
-                    <StackPanel Grid.Row="0" Spacing="8">
-                        <TextBlock Text="PASTE A LINK" Classes="eyebrow" />
+                    <!-- URL input -->
+                    <StackPanel Grid.Row="0" Spacing="9">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Download a video" Classes="page-title" />
+                            <TextBlock Text="Paste a link, choose a format and add it to the download queue."
+                                       Classes="muted" />
+                        </StackPanel>
+
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                             <TextBox Grid.Column="0"
                                      Text="{Binding UrlInput}"
-                                     PlaceholderText="https://youtube.com/watch?v=…"
+                                     PlaceholderText="Paste a YouTube, TikTok or other supported link"
                                      FontSize="14"
                                      VerticalAlignment="Center" />
                             <Button Grid.Column="1"
                                     Classes="primary"
-                                    Content="GRAB"
+                                    Content="Grab"
                                     MinWidth="110"
                                     Command="{Binding FetchCommand}"
                                     IsEnabled="{Binding !IsFetching}"
                                     VerticalAlignment="Stretch" />
                         </Grid>
-                        <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsFetching}" />
+
+                        <ProgressBar IsIndeterminate="True"
+                                     IsVisible="{Binding IsFetching}" />
+
                         <TextBlock Text="{Binding FetchError}"
                                    IsVisible="{Binding FetchError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                   Foreground="{StaticResource BrushClawRed}"
+                                   Foreground="{StaticResource BrushAccent}"
                                    TextWrapping="Wrap" />
                     </StackPanel>
 
@@ -80,21 +102,29 @@
                     <Border Grid.Row="1"
                             Classes="card"
                             IsVisible="{Binding FetchedVideo, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <StackPanel Spacing="12">
-                            <TextBlock Text="{Binding FetchedVideo.Title}"
-                                       FontSize="15" FontWeight="SemiBold"
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="13">
+                            <TextBlock Grid.Row="0"
+                                       Text="{Binding FetchedVideo.Title}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
                                        TextWrapping="Wrap" />
 
-                            <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-                                <CheckBox Content="Audio only"
+                            <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="18">
+                                <CheckBox Grid.Column="0"
+                                          Content="Audio only"
                                           IsChecked="{Binding IsAudioOnly}"
                                           IsEnabled="{Binding IsFfmpegAvailable}"
-                                          ToolTip.Tip="{Binding FfmpegWarning}" />
+                                          ToolTip.Tip="{Binding FfmpegWarning}"
+                                          VerticalAlignment="Center" />
 
-                                <StackPanel Orientation="Horizontal" Spacing="8"
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
                                             IsVisible="{Binding !IsAudioOnly}"
                                             VerticalAlignment="Center">
-                                    <TextBlock Text="Quality" Classes="muted" VerticalAlignment="Center" />
+                                    <TextBlock Text="Quality"
+                                               Classes="label"
+                                               VerticalAlignment="Center" />
                                     <ComboBox MinWidth="190"
                                               ItemsSource="{Binding FetchedVideo.VideoFormats}"
                                               SelectedItem="{Binding SelectedFormat}">
@@ -106,46 +136,50 @@
                                     </ComboBox>
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal" Spacing="8"
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
                                             IsVisible="{Binding IsAudioOnly}"
                                             VerticalAlignment="Center">
-                                    <TextBlock Text="Format" Classes="muted" VerticalAlignment="Center" />
-                                    <ComboBox MinWidth="110"
+                                    <TextBlock Text="Format"
+                                               Classes="label"
+                                               VerticalAlignment="Center" />
+                                    <ComboBox MinWidth="120"
                                               ItemsSource="{x:Static vm:MainWindowViewModel.AudioFormats}"
                                               SelectedItem="{Binding SelectedAudioFormat}" />
                                 </StackPanel>
-                            </StackPanel>
 
-                            <StackPanel Spacing="4" IsVisible="{Binding FetchedVideo.IsPlaylist}">
+                                <Button Grid.Column="2"
+                                        Content="Add to queue"
+                                        Classes="primary"
+                                        Command="{Binding AddToQueueCommand}"
+                                        VerticalAlignment="Center" />
+                            </Grid>
+
+                            <StackPanel Grid.Row="2"
+                                        Spacing="4"
+                                        IsVisible="{Binding FetchedVideo.IsPlaylist}">
                                 <CheckBox Content="Queue the entire playlist"
                                           IsChecked="{Binding QueueEntirePlaylist}" />
-                                <TextBlock Text="A playlist URL always downloads every entry. To grab a single video, paste that video's own URL instead."
+                                <TextBlock Text="A playlist URL downloads every entry. Paste a video's own URL to download only that item."
                                            Classes="hint" />
                             </StackPanel>
-
-                            <Button Content="Add to Queue"
-                                    Classes="ghost"
-                                    HorizontalAlignment="Left"
-                                    Command="{Binding AddToQueueCommand}" />
-                        </StackPanel>
+                        </Grid>
                     </Border>
 
                     <!-- Banners -->
                     <StackPanel Grid.Row="2" Spacing="8">
-
-                        <!-- ffmpeg missing -->
                         <Border Classes="banner"
                                 IsVisible="{Binding !IsFfmpegAvailable}"
-                                Background="#26F0A202"
+                                Background="#1FD6A443"
                                 BorderBrush="{StaticResource BrushWarning}">
                             <TextBlock Text="{Binding FfmpegWarning}" TextWrapping="Wrap" />
                         </Border>
 
-                        <!-- yt-dlp update -->
                         <Border Classes="banner"
                                 IsVisible="{Binding UpdateAvailableMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                Background="#2635C7F0"
-                                BorderBrush="{StaticResource BrushSignalCyan}">
+                                Background="#1F5B8DEF"
+                                BorderBrush="{StaticResource BrushInfo}">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                 <TextBlock Grid.Column="0"
                                            Text="{Binding UpdateAvailableMessage}"
@@ -169,11 +203,13 @@
                     <!-- Queue -->
                     <Grid Grid.Row="3" RowDefinitions="Auto,Auto" RowSpacing="10">
                         <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0" Text="QUEUE" Classes="eyebrow" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="0"
+                                       Text="Download queue"
+                                       Classes="section-title"
+                                       VerticalAlignment="Center" />
                             <Button Grid.Column="1"
-                                    Classes="ghost"
+                                    Classes="text"
                                     Content="Clear"
-                                    Padding="12,4"
                                     FontSize="11"
                                     Command="{Binding ClearQueueCommand}" />
                         </Grid>
@@ -182,39 +218,51 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:QueueItemViewModel">
                                     <Border Classes="card" Margin="0,0,0,8" Padding="0">
-                                        <Grid ColumnDefinitions="4,*">
+                                        <Grid ColumnDefinitions="4,*,Auto">
                                             <Border Grid.Column="0"
                                                     Background="{Binding StatusColor}"
-                                                    CornerRadius="10,0,0,10" />
-                                            <Grid Grid.Column="1"
-                                                  Margin="14,12"
-                                                  ColumnDefinitions="*,Auto"
-                                                  ColumnSpacing="12">
-                                                <StackPanel Grid.Column="0" Spacing="6">
-                                                    <TextBlock Text="{Binding DisplayName}"
-                                                               TextTrimming="CharacterEllipsis"
-                                                               FontWeight="SemiBold" />
-                                                    <ProgressBar Minimum="0" Maximum="100"
-                                                                 Value="{Binding DisplayPercent, Mode=OneWay}"
-                                                                 IsIndeterminate="{Binding IsIndeterminate}" />
-                                                    <StackPanel Orientation="Horizontal" Spacing="14">
-                                                        <TextBlock Text="{Binding Status}" Classes="muted" />
-                                                        <TextBlock Text="{Binding Speed}" Classes="muted" />
-                                                        <TextBlock Text="{Binding Eta}" Classes="muted" />
-                                                    </StackPanel>
-                                                    <TextBlock Text="{Binding ResultMessage}"
-                                                               Classes="muted"
-                                                               TextTrimming="CharacterEllipsis"
-                                                               IsVisible="{Binding ResultMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                    CornerRadius="12,0,0,12" />
+
+                                            <StackPanel Grid.Column="1"
+                                                        Margin="15,13"
+                                                        Spacing="7">
+                                                <TextBlock Text="{Binding DisplayName}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           FontWeight="SemiBold" />
+
+                                                <ProgressBar Minimum="0"
+                                                             Maximum="100"
+                                                             Value="{Binding DisplayPercent, Mode=OneWay}"
+                                                             IsIndeterminate="{Binding IsIndeterminate}" />
+
+                                                <StackPanel Orientation="Horizontal" Spacing="14">
+                                                    <TextBlock Text="{Binding Status}" Classes="muted" FontSize="11" />
+                                                    <TextBlock Text="{Binding Speed}" Classes="muted" FontSize="11" />
+                                                    <TextBlock Text="{Binding Eta}" Classes="muted" FontSize="11" />
                                                 </StackPanel>
 
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Horizontal" Spacing="6"
-                                                            VerticalAlignment="Center">
-                                                    <Button Classes="ghost" Content="Cancel" Padding="10,6" FontSize="11" Command="{Binding CancelCommand}" />
-                                                    <Button Classes="ghost" Content="Show in folder" Padding="10,6" FontSize="11" Command="{Binding ShowInFolderCommand}" />
-                                                </StackPanel>
-                                            </Grid>
+                                                <TextBlock Text="{Binding ResultMessage}"
+                                                           Classes="hint"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           IsVisible="{Binding ResultMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2"
+                                                        Margin="0,0,14,0"
+                                                        Orientation="Horizontal"
+                                                        Spacing="6"
+                                                        VerticalAlignment="Center">
+                                                <Button Classes="ghost"
+                                                        Content="Cancel"
+                                                        Padding="10,6"
+                                                        FontSize="11"
+                                                        Command="{Binding CancelCommand}" />
+                                                <Button Classes="ghost"
+                                                        Content="Show in folder"
+                                                        Padding="10,6"
+                                                        FontSize="11"
+                                                        Command="{Binding ShowInFolderCommand}" />
+                                            </StackPanel>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -226,19 +274,30 @@
         </DockPanel>
 
         <!-- Bootstrap overlay -->
-        <Border IsVisible="{Binding IsBootstrapping}" Background="{StaticResource BrushVoid}">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Spacing="16" Width="360">
-                <Image Source="/Assets/icon.png" Width="72" Height="72" HorizontalAlignment="Center" />
-                <TextBlock Text="YTSZARPAK" Classes="wordmark" FontSize="22" HorizontalAlignment="Center" />
-                <TextBlock Text="{Binding BootstrapMessage}"
-                           Classes="muted"
-                           HorizontalAlignment="Center"
-                           TextWrapping="Wrap"
-                           TextAlignment="Center" />
-                <ProgressBar Minimum="0" Maximum="100"
-                             Value="{Binding BootstrapProgress, Mode=OneWay}" />
-            </StackPanel>
+        <Border IsVisible="{Binding IsBootstrapping}"
+                Background="#F5101215">
+            <Border Classes="card"
+                    Width="380"
+                    Padding="28"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <StackPanel Spacing="14">
+                    <Image Source="/Assets/icon.png"
+                           Width="54" Height="54"
+                           HorizontalAlignment="Center" />
+                    <TextBlock Text="Getting things ready"
+                               Classes="section-title"
+                               FontSize="17"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding BootstrapMessage}"
+                               Classes="muted"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center" />
+                    <ProgressBar Minimum="0" Maximum="100"
+                                 Value="{Binding BootstrapProgress, Mode=OneWay}" />
+                </StackPanel>
+            </Border>
         </Border>
     </Panel>
 </Window>
