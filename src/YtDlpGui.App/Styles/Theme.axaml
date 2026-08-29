@@ -1,225 +1,271 @@
 <!--
-  YTSzarpak design tokens.
+  YTSzarpak desktop theme.
 
-  Palette (the brand mark: a mechanical claw yanking a play button out of frame):
-    Void        #0B0E14  window background — the dark shop-floor the claw works in
-    Panel       #131826  card / raised surface
-    PanelRaised #1B2233  inputs, buttons, anything one step brighter than a card
-    Steel       #3A4B63  primary border — the claw's plating
-    SteelDim    #232D42  quieter border / dividers
-    ClawRed     #E63946  primary action — the one thing that's always red
-    ClawRedHot  #FF4D5E  primary action, hover
-    SignalCyan  #35C7F0  live/informational accent — progress, focus, links
-    Paper       #E8EDF4  primary text
-    PaperDim    #8CA0BC  secondary/muted text
-    Success     #2ECC71  completed
-    Warning     #F0A202  needs attention (ffmpeg missing, etc.)
-
-  Display face is Orbitron (OFL), used sparingly for the wordmark and section eyebrows only —
-  everything else reads in Inter so the mechanical typeface stays a signature, not a habit.
+  Direction: calm, modern utility UI rather than a futuristic/cyberpunk skin.
+  The brand red remains the primary action color; blue is reserved for progress
+  and informational states. Inter is used throughout for a native, readable feel.
 -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
   <Styles.Resources>
     <ResourceDictionary>
-      <Color x:Key="ColorVoid">#0B0E14</Color>
-      <Color x:Key="ColorPanel">#131826</Color>
-      <Color x:Key="ColorPanelRaised">#1B2233</Color>
-      <Color x:Key="ColorSteel">#3A4B63</Color>
-      <Color x:Key="ColorSteelDim">#232D42</Color>
-      <Color x:Key="ColorClawRed">#E63946</Color>
-      <Color x:Key="ColorClawRedHot">#FF4D5E</Color>
-      <Color x:Key="ColorSignalCyan">#35C7F0</Color>
-      <Color x:Key="ColorPaper">#E8EDF4</Color>
-      <Color x:Key="ColorPaperDim">#8CA0BC</Color>
-      <Color x:Key="ColorSuccess">#2ECC71</Color>
-      <Color x:Key="ColorWarning">#F0A202</Color>
+      <Color x:Key="ColorCanvas">#101215</Color>
+      <Color x:Key="ColorTopBar">#15181C</Color>
+      <Color x:Key="ColorSurface">#181B20</Color>
+      <Color x:Key="ColorSurfaceRaised">#1E2228</Color>
+      <Color x:Key="ColorSurfaceHover">#252A31</Color>
+      <Color x:Key="ColorBorder">#2F353E</Color>
+      <Color x:Key="ColorBorderStrong">#3B434E</Color>
+      <Color x:Key="ColorAccent">#E5484D</Color>
+      <Color x:Key="ColorAccentHover">#F05A5F</Color>
+      <Color x:Key="ColorAccentPressed">#C93B40</Color>
+      <Color x:Key="ColorInfo">#5B8DEF</Color>
+      <Color x:Key="ColorTextPrimary">#F2F4F7</Color>
+      <Color x:Key="ColorTextSecondary">#A7B0BC</Color>
+      <Color x:Key="ColorTextTertiary">#747F8D</Color>
+      <Color x:Key="ColorSuccess">#3CAB75</Color>
+      <Color x:Key="ColorWarning">#D6A443</Color>
 
-      <SolidColorBrush x:Key="BrushVoid" Color="{StaticResource ColorVoid}" />
-      <SolidColorBrush x:Key="BrushPanel" Color="{StaticResource ColorPanel}" />
-      <SolidColorBrush x:Key="BrushPanelRaised" Color="{StaticResource ColorPanelRaised}" />
-      <SolidColorBrush x:Key="BrushSteel" Color="{StaticResource ColorSteel}" />
-      <SolidColorBrush x:Key="BrushSteelDim" Color="{StaticResource ColorSteelDim}" />
-      <SolidColorBrush x:Key="BrushClawRed" Color="{StaticResource ColorClawRed}" />
-      <SolidColorBrush x:Key="BrushClawRedHot" Color="{StaticResource ColorClawRedHot}" />
-      <SolidColorBrush x:Key="BrushSignalCyan" Color="{StaticResource ColorSignalCyan}" />
-      <SolidColorBrush x:Key="BrushPaper" Color="{StaticResource ColorPaper}" />
-      <SolidColorBrush x:Key="BrushPaperDim" Color="{StaticResource ColorPaperDim}" />
+      <SolidColorBrush x:Key="BrushCanvas" Color="{StaticResource ColorCanvas}" />
+      <SolidColorBrush x:Key="BrushTopBar" Color="{StaticResource ColorTopBar}" />
+      <SolidColorBrush x:Key="BrushSurface" Color="{StaticResource ColorSurface}" />
+      <SolidColorBrush x:Key="BrushSurfaceRaised" Color="{StaticResource ColorSurfaceRaised}" />
+      <SolidColorBrush x:Key="BrushSurfaceHover" Color="{StaticResource ColorSurfaceHover}" />
+      <SolidColorBrush x:Key="BrushBorder" Color="{StaticResource ColorBorder}" />
+      <SolidColorBrush x:Key="BrushBorderStrong" Color="{StaticResource ColorBorderStrong}" />
+      <SolidColorBrush x:Key="BrushAccent" Color="{StaticResource ColorAccent}" />
+      <SolidColorBrush x:Key="BrushAccentHover" Color="{StaticResource ColorAccentHover}" />
+      <SolidColorBrush x:Key="BrushAccentPressed" Color="{StaticResource ColorAccentPressed}" />
+      <SolidColorBrush x:Key="BrushInfo" Color="{StaticResource ColorInfo}" />
+      <SolidColorBrush x:Key="BrushTextPrimary" Color="{StaticResource ColorTextPrimary}" />
+      <SolidColorBrush x:Key="BrushTextSecondary" Color="{StaticResource ColorTextSecondary}" />
+      <SolidColorBrush x:Key="BrushTextTertiary" Color="{StaticResource ColorTextTertiary}" />
       <SolidColorBrush x:Key="BrushSuccess" Color="{StaticResource ColorSuccess}" />
       <SolidColorBrush x:Key="BrushWarning" Color="{StaticResource ColorWarning}" />
 
-      <FontFamily x:Key="DisplayFont">avares://YTSzarpak/Assets/Fonts#Orbitron</FontFamily>
+      <!-- Compatibility aliases for bindings/views that still refer to old token names. -->
+      <SolidColorBrush x:Key="BrushVoid" Color="{StaticResource ColorCanvas}" />
+      <SolidColorBrush x:Key="BrushPanel" Color="{StaticResource ColorSurface}" />
+      <SolidColorBrush x:Key="BrushPanelRaised" Color="{StaticResource ColorSurfaceRaised}" />
+      <SolidColorBrush x:Key="BrushSteel" Color="{StaticResource ColorBorderStrong}" />
+      <SolidColorBrush x:Key="BrushSteelDim" Color="{StaticResource ColorBorder}" />
+      <SolidColorBrush x:Key="BrushClawRed" Color="{StaticResource ColorAccent}" />
+      <SolidColorBrush x:Key="BrushClawRedHot" Color="{StaticResource ColorAccentHover}" />
+      <SolidColorBrush x:Key="BrushSignalCyan" Color="{StaticResource ColorInfo}" />
+      <SolidColorBrush x:Key="BrushPaper" Color="{StaticResource ColorTextPrimary}" />
+      <SolidColorBrush x:Key="BrushPaperDim" Color="{StaticResource ColorTextSecondary}" />
     </ResourceDictionary>
   </Styles.Resources>
 
-  <!-- Base -->
   <Style Selector="Window">
-    <Setter Property="Background" Value="{StaticResource BrushVoid}" />
+    <Setter Property="Background" Value="{StaticResource BrushCanvas}" />
     <Setter Property="FontFamily" Value="Inter" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
     <Setter Property="FontSize" Value="13" />
   </Style>
 
   <Style Selector="TextBlock">
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
   </Style>
 
-  <!-- Tracked-out caps label used above a section/field: encodes "this is a group heading" -->
-  <Style Selector="TextBlock.eyebrow">
-    <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
-    <Setter Property="FontSize" Value="11" />
-    <Setter Property="FontWeight" Value="Bold" />
-    <Setter Property="Foreground" Value="{StaticResource BrushSignalCyan}" />
-    <Setter Property="LetterSpacing" Value="2" />
+  <Style Selector="TextBlock.brand">
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
   </Style>
 
-  <Style Selector="TextBlock.wordmark">
-    <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
-    <Setter Property="FontWeight" Value="Bold" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
+  <Style Selector="TextBlock.page-title">
+    <Setter Property="FontSize" Value="25" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+
+  <Style Selector="TextBlock.section-title">
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+
+  <Style Selector="TextBlock.label">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
   </Style>
 
   <Style Selector="TextBlock.muted">
-    <Setter Property="Foreground" Value="{StaticResource BrushPaperDim}" />
-    <Setter Property="FontSize" Value="11" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
+    <Setter Property="FontSize" Value="12" />
   </Style>
 
   <Style Selector="TextBlock.hint">
-    <Setter Property="Foreground" Value="{StaticResource BrushPaperDim}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextTertiary}" />
     <Setter Property="FontSize" Value="11" />
     <Setter Property="TextWrapping" Value="Wrap" />
   </Style>
 
-  <!-- Cards / banners -->
+  <Style Selector="TextBlock.eyebrow">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
+  </Style>
+
+  <Style Selector="TextBlock.wordmark">
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+
   <Style Selector="Border.card">
-    <Setter Property="Background" Value="{StaticResource BrushPanel}" />
-    <Setter Property="BorderBrush" Value="{StaticResource BrushSteelDim}" />
+    <Setter Property="Background" Value="{StaticResource BrushSurface}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="CornerRadius" Value="12" />
     <Setter Property="Padding" Value="16" />
   </Style>
 
   <Style Selector="Border.banner">
-    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="CornerRadius" Value="10" />
     <Setter Property="Padding" Value="12,10" />
     <Setter Property="BorderThickness" Value="1" />
   </Style>
 
-  <!-- Buttons -->
-  <Style Selector="Button">
-    <Setter Property="Background" Value="{StaticResource BrushPanelRaised}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
-    <Setter Property="BorderBrush" Value="{StaticResource BrushSteel}" />
+  <Style Selector="Border.status-chip">
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="6" />
-    <Setter Property="Padding" Value="14,8" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Padding" Value="10,5" />
+  </Style>
+
+  <Style Selector="Button">
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorderStrong}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="9" />
+    <Setter Property="Padding" Value="13,8" />
+    <Setter Property="FontWeight" Value="SemiBold" />
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="Transitions">
       <Transitions>
         <BrushTransition Property="Background" Duration="0:0:0.12" />
+        <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
       </Transitions>
     </Setter>
   </Style>
+
   <Style Selector="Button:pointerover">
-    <Setter Property="Background" Value="{StaticResource BrushSteelDim}" />
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceHover}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorderStrong}" />
   </Style>
+
   <Style Selector="Button:disabled">
     <Setter Property="Opacity" Value="0.45" />
   </Style>
 
-  <!-- The signature move: the one button in the app that gets to be loud, with a small
-       "snap" on press — a nod to the brand's grabbing claw. -->
   <Style Selector="Button.primary">
-    <Setter Property="Background" Value="{StaticResource BrushClawRed}" />
-    <Setter Property="BorderBrush" Value="{StaticResource BrushClawRed}" />
+    <Setter Property="Background" Value="{StaticResource BrushAccent}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushAccent}" />
     <Setter Property="Foreground" Value="White" />
-    <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
-    <Setter Property="FontWeight" Value="Bold" />
-    <Setter Property="FontSize" Value="13" />
-    <Setter Property="Padding" Value="22,10" />
-    <Setter Property="CornerRadius" Value="8" />
-    <Setter Property="RenderTransform" Value="scale(1)" />
-    <Setter Property="Transitions">
-      <Transitions>
-        <BrushTransition Property="Background" Duration="0:0:0.12" />
-        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.08" />
-      </Transitions>
-    </Setter>
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Padding" Value="18,9" />
+    <Setter Property="CornerRadius" Value="9" />
   </Style>
+
   <Style Selector="Button.primary:pointerover">
-    <Setter Property="Background" Value="{StaticResource BrushClawRedHot}" />
+    <Setter Property="Background" Value="{StaticResource BrushAccentHover}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushAccentHover}" />
   </Style>
+
   <Style Selector="Button.primary:pressed">
-    <Setter Property="RenderTransform" Value="scale(0.94)" />
+    <Setter Property="Background" Value="{StaticResource BrushAccentPressed}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushAccentPressed}" />
   </Style>
 
   <Style Selector="Button.ghost">
     <Setter Property="Background" Value="Transparent" />
-    <Setter Property="BorderBrush" Value="{StaticResource BrushSteel}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaperDim}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorderStrong}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
   </Style>
+
   <Style Selector="Button.ghost:pointerover">
-    <Setter Property="Background" Value="{StaticResource BrushPanel}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+  </Style>
+
+  <Style Selector="Button.text">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
+    <Setter Property="Padding" Value="8,5" />
+  </Style>
+
+  <Style Selector="Button.text:pointerover">
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
   </Style>
 
   <Style Selector="Button.icon">
     <Setter Property="Background" Value="Transparent" />
-    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorder}" />
+    <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Padding" Value="8" />
-    <Setter Property="CornerRadius" Value="18" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaperDim}" />
-  </Style>
-  <Style Selector="Button.icon:pointerover">
-    <Setter Property="Background" Value="{StaticResource BrushPanelRaised}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushSignalCyan}" />
+    <Setter Property="CornerRadius" Value="9" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextSecondary}" />
+    <Setter Property="MinWidth" Value="36" />
+    <Setter Property="MinHeight" Value="36" />
   </Style>
 
-  <!-- Inputs -->
-  <Style Selector="TextBox">
-    <Setter Property="Background" Value="{StaticResource BrushPanelRaised}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
-    <Setter Property="BorderBrush" Value="{StaticResource BrushSteel}" />
-    <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="8" />
-    <Setter Property="Padding" Value="12,9" />
-    <Setter Property="CaretBrush" Value="{StaticResource BrushSignalCyan}" />
-    <Setter Property="SelectionBrush" Value="#4035C7F0" />
+  <Style Selector="Button.icon:pointerover">
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
   </Style>
+
+  <Style Selector="TextBox">
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorderStrong}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="9" />
+    <Setter Property="Padding" Value="12,9" />
+    <Setter Property="CaretBrush" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="SelectionBrush" Value="#405B8DEF" />
+  </Style>
+
   <Style Selector="TextBox:focus-within">
-    <Setter Property="BorderBrush" Value="{StaticResource BrushSignalCyan}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushInfo}" />
   </Style>
 
   <Style Selector="ComboBox">
-    <Setter Property="Background" Value="{StaticResource BrushPanelRaised}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
-    <Setter Property="BorderBrush" Value="{StaticResource BrushSteel}" />
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorderStrong}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="8" />
-    <Setter Property="Padding" Value="12,8" />
+    <Setter Property="CornerRadius" Value="9" />
+    <Setter Property="Padding" Value="10,7" />
   </Style>
+
   <Style Selector="ComboBoxItem">
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
-    <Setter Property="Background" Value="{StaticResource BrushPanel}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="Background" Value="{StaticResource BrushSurface}" />
   </Style>
 
   <Style Selector="NumericUpDown">
-    <Setter Property="Background" Value="{StaticResource BrushPanelRaised}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
-    <Setter Property="BorderBrush" Value="{StaticResource BrushSteel}" />
+    <Setter Property="Background" Value="{StaticResource BrushSurfaceRaised}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrushBorderStrong}" />
     <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="CornerRadius" Value="9" />
   </Style>
 
   <Style Selector="CheckBox">
-    <Setter Property="Foreground" Value="{StaticResource BrushPaper}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushTextPrimary}" />
   </Style>
 
-  <!-- Progress -->
   <Style Selector="ProgressBar">
-    <Setter Property="Background" Value="{StaticResource BrushSteelDim}" />
-    <Setter Property="Foreground" Value="{StaticResource BrushSignalCyan}" />
+    <Setter Property="Background" Value="{StaticResource BrushBorder}" />
+    <Setter Property="Foreground" Value="{StaticResource BrushInfo}" />
     <Setter Property="Height" Value="6" />
     <Setter Property="CornerRadius" Value="3" />
   </Style>
