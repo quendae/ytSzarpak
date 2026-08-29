@@ -2,6 +2,8 @@ name: Build Windows release
 
 on:
   workflow_dispatch:
+  issues:
+    types: [opened]
   push:
     branches: [main]
     paths:
@@ -12,6 +14,7 @@ permissions:
 
 jobs:
   release-windows:
+    if: github.event_name != 'issues' || github.event.issue.title == 'release: build windows'
     runs-on: windows-latest
 
     steps:
