@@ -68,7 +68,7 @@ Uruchomienie aplikacji desktopowej:
 dotnet run --project src/YtDlpGui.App
 ```
 
-## Buildy dystrybucyjne
+## Wersje do dystrybucji
 
 Repozytorium zawiera skrypty publikujące dla poszczególnych systemów. Tworzą one samowystarczalne buildy, więc użytkownik końcowy nie musi osobno instalować .NET ani Pythona.
 
@@ -97,5 +97,5 @@ Każdy z tych projektów zachowuje własną licencję i warunki dystrybucji. Sam
 ---
 
 <p align="center">
-  Prosty desktopowy interfejs dla bardzo możliwościowego narzędzia konsolowego.
+  Prosty desktopowy interfejs dla bardzo rozbudowanego narzędzia konsolowego.
 </p>
