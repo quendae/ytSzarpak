@@ -3,128 +3,161 @@
         xmlns:vm="using:YtDlpGui.App.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="520" d:DesignHeight="640"
+        mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="690"
         x:Class="YtDlpGui.App.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
         Title="Settings"
-        Width="520"
-        Height="640"
+        Width="560"
+        Height="690"
+        MinWidth="500"
+        MinHeight="560"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
 
-    <ScrollViewer>
-        <StackPanel Margin="24" Spacing="22">
-
-            <!-- Downloads -->
-            <StackPanel Spacing="14">
-                <TextBlock Text="DOWNLOADS" Classes="eyebrow" />
-
-                <StackPanel Spacing="6">
-                    <TextBlock Text="Output folder" Classes="muted" />
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <TextBox Grid.Column="0"
-                                 Text="{Binding OutputDirectory}"
-                                 PlaceholderText="Select download folder" />
-                        <Button Grid.Column="1"
-                                Classes="ghost"
-                                Content="Browse…"
-                                Command="{Binding BrowseOutputDirectoryCommand}" />
-                    </Grid>
-                </StackPanel>
-
-                <StackPanel Spacing="6">
-                    <TextBlock Text="Max concurrent downloads" Classes="muted" />
-                    <NumericUpDown Value="{Binding MaxConcurrentDownloads}"
-                                   Minimum="1"
-                                   Maximum="10"
-                                   Width="140"
-                                   HorizontalAlignment="Left" />
-                </StackPanel>
-
-                <StackPanel Spacing="6">
-                    <TextBlock Text="Filename template" Classes="muted" />
-                    <TextBox Text="{Binding FilenameTemplate}"
-                             PlaceholderText="%(title)s [%(id)s].%(ext)s" />
-                    <TextBlock Text="Uses yt-dlp template syntax, e.g. %(title)s.%(ext)s" Classes="hint" />
-                </StackPanel>
+    <DockPanel LastChildFill="True">
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource BrushTopBar}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="0,0,0,1">
+            <StackPanel Margin="24,18" Spacing="3">
+                <TextBlock Text="Settings" Classes="page-title" FontSize="22" />
+                <TextBlock Text="Downloads, FFmpeg and YouTube sign-in."
+                           Classes="muted" />
             </StackPanel>
+        </Border>
 
-            <Border Height="1" Background="{StaticResource BrushSteelDim}" />
-
-            <!-- FFmpeg -->
-            <StackPanel Spacing="14">
-                <TextBlock Text="FFMPEG" Classes="eyebrow" />
-
-                <StackPanel Spacing="6">
-                    <TextBlock Text="{Binding FfmpegStatusMessage}"
-                               Foreground="{StaticResource BrushSuccess}"
-                               IsVisible="{Binding IsFfmpegDetected}" />
-                    <TextBlock Text="{Binding FfmpegStatusMessage}"
-                               Foreground="{StaticResource BrushWarning}"
-                               IsVisible="{Binding !IsFfmpegDetected}" />
-
-                    <TextBlock Text="Path override" Classes="muted" Margin="0,4,0,0" />
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <TextBox Grid.Column="0"
-                                 Text="{Binding FfmpegPathOverride}"
-                                 PlaceholderText="Auto-detected — override only if needed" />
-                        <Button Grid.Column="1"
-                                Classes="ghost"
-                                Content="Browse…"
-                                Command="{Binding BrowseFfmpegPathCommand}" />
-                    </Grid>
-                    <TextBlock Text="A build is downloaded automatically if none is found — this is only for pointing at a specific install."
-                               Classes="hint" />
-                </StackPanel>
-            </StackPanel>
-
-            <Border Height="1" Background="{StaticResource BrushSteelDim}" />
-
-            <!-- YouTube sign-in -->
-            <StackPanel Spacing="14">
-                <TextBlock Text="YOUTUBE SIGN-IN" Classes="eyebrow" />
-                <TextBlock Classes="hint"
-                           Text="Some videos require being signed in. YTSzarpak never asks for a password — it reuses the login already sitting in a browser you're signed into on this computer." />
-
-                <StackPanel Spacing="6">
-                    <TextBlock Text="Sign in via browser" Classes="muted" />
-                    <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.BrowserOptions}"
-                              SelectedItem="{Binding SelectedBrowser}"
-                              HorizontalAlignment="Stretch" />
-                </StackPanel>
-
-                <StackPanel Spacing="6">
-                    <TextBlock Text="Or use a cookies file (recommended if browser sign-in fails)" Classes="muted" />
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <TextBox Grid.Column="0"
-                                 Text="{Binding CookiesFilePath}"
-                                 PlaceholderText="Path to a Netscape-format cookies.txt" />
-                        <Button Grid.Column="1"
-                                Classes="ghost"
-                                Content="Browse…"
-                                Command="{Binding BrowseCookiesFileCommand}" />
-                    </Grid>
-                    <TextBlock Classes="hint" TextWrapping="Wrap"
-                               Text="If set, this file is always used instead of the browser above. Chrome in particular can fail with 'could not copy cookie database' while it's running (a known yt-dlp/Chrome issue on Windows) — export cookies.txt with a browser extension and point here instead." />
-                </StackPanel>
-            </StackPanel>
-
-            <Border Height="1" Background="{StaticResource BrushSteelDim}" />
-
-            <!-- Actions -->
-            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+        <Border DockPanel.Dock="Bottom"
+                Background="{StaticResource BrushTopBar}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="0,1,0,0"
+                Padding="24,14">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="10"
+                        HorizontalAlignment="Right">
                 <Button Content="Cancel"
                         Classes="ghost"
                         Command="{Binding CancelCommand}"
-                        Width="90"
+                        Width="92"
                         IsCancel="True" />
                 <Button Content="Save"
                         Classes="primary"
                         Command="{Binding SaveCommand}"
-                        Width="90"
+                        Width="92"
                         IsDefault="True" />
             </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+        </Border>
 
+        <ScrollViewer>
+            <StackPanel Margin="24" Spacing="14">
+
+                <!-- Downloads -->
+                <Border Classes="card">
+                    <StackPanel Spacing="15">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Downloads" Classes="section-title" />
+                            <TextBlock Text="Choose where files are saved and how downloads are named."
+                                       Classes="hint" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Output folder" Classes="label" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding OutputDirectory}"
+                                         PlaceholderText="Select download folder" />
+                                <Button Grid.Column="1"
+                                        Classes="ghost"
+                                        Content="Browse…"
+                                        Command="{Binding BrowseOutputDirectoryCommand}" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Max concurrent downloads" Classes="label" />
+                            <NumericUpDown Value="{Binding MaxConcurrentDownloads}"
+                                           Minimum="1"
+                                           Maximum="10"
+                                           Width="140"
+                                           HorizontalAlignment="Left" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Filename template" Classes="label" />
+                            <TextBox Text="{Binding FilenameTemplate}"
+                                     PlaceholderText="%(title)s [%(id)s].%(ext)s" />
+                            <TextBlock Text="Uses yt-dlp template syntax, for example %(title)s.%(ext)s"
+                                       Classes="hint" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- FFmpeg -->
+                <Border Classes="card">
+                    <StackPanel Spacing="14">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="FFmpeg" Classes="section-title" />
+                            <TextBlock Text="Usually detected or downloaded automatically."
+                                       Classes="hint" />
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding FfmpegStatusMessage}"
+                                   Foreground="{StaticResource BrushSuccess}"
+                                   IsVisible="{Binding IsFfmpegDetected}" />
+                        <TextBlock Text="{Binding FfmpegStatusMessage}"
+                                   Foreground="{StaticResource BrushWarning}"
+                                   IsVisible="{Binding !IsFfmpegDetected}" />
+
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Path override" Classes="label" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding FfmpegPathOverride}"
+                                         PlaceholderText="Auto-detected — override only if needed" />
+                                <Button Grid.Column="1"
+                                        Classes="ghost"
+                                        Content="Browse…"
+                                        Command="{Binding BrowseFfmpegPathCommand}" />
+                            </Grid>
+                            <TextBlock Text="Only set this when you want YTSzarpak to use a specific FFmpeg installation."
+                                       Classes="hint" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- YouTube sign-in -->
+                <Border Classes="card">
+                    <StackPanel Spacing="14">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="YouTube sign-in" Classes="section-title" />
+                            <TextBlock Text="For videos that require an authenticated browser session."
+                                       Classes="hint" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Use cookies from browser" Classes="label" />
+                            <ComboBox ItemsSource="{x:Static vm:SettingsViewModel.BrowserOptions}"
+                                      SelectedItem="{Binding SelectedBrowser}"
+                                      HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Cookies file" Classes="label" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding CookiesFilePath}"
+                                         PlaceholderText="Path to a Netscape-format cookies.txt" />
+                                <Button Grid.Column="1"
+                                        Classes="ghost"
+                                        Content="Browse…"
+                                        Command="{Binding BrowseCookiesFileCommand}" />
+                            </Grid>
+                            <TextBlock Classes="hint"
+                                       TextWrapping="Wrap"
+                                       Text="If a cookies file is set, it takes priority over the browser option. This is also a useful fallback when Chrome cannot expose its cookie database while running." />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
 </Window>
