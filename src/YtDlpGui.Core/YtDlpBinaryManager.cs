@@ -8,13 +8,13 @@ public sealed record UpdateCheckResult(bool UpdateAvailable, string? CurrentVers
 
 /// <summary>
 /// Locates, first-run-downloads, version-checks, and updates the standalone yt-dlp executable.
-/// yt-dlp is never a pip/Python dependency here: the official standalone builds
+/// yt-dlp is never a pip/Python dependency here: the official standalone nightly builds
 /// (yt-dlp.exe / yt-dlp_macos / yt-dlp_linux[_aarch64]) are themselves self-contained,
 /// so nothing beyond this one file needs to exist on the target machine.
 /// </summary>
 public sealed class YtDlpBinaryManager
 {
-    private const string LatestReleaseUrl = "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest";
+    private const string NightlyReleaseUrl = "https://api.github.com/repos/yt-dlp/yt-dlp-nightly-builds/releases/latest";
     private static readonly TimeSpan UpdateCheckInterval = TimeSpan.FromHours(24);
 
     private readonly string _binDirectory;
@@ -61,7 +61,7 @@ public sealed class YtDlpBinaryManager
         HttpDownloadHelper.SetExecutableBitIfNeeded(ExecutablePath);
     }
 
-    /// <summary>Downloads the latest release binary if none is present yet (first run).</summary>
+    /// <summary>Downloads the latest nightly yt-dlp binary if none is present yet (first run).</summary>
     public async Task EnsureAvailableAsync(IProgress<double>? progress, CancellationToken ct)
     {
         if (IsAvailable)
@@ -69,7 +69,7 @@ public sealed class YtDlpBinaryManager
 
         var (_, downloadUrl) = await FetchLatestReleaseAsync(ct);
         if (downloadUrl is null)
-            throw new InvalidOperationException("Could not determine a yt-dlp download URL for this platform.");
+            throw new InvalidOperationException("Could not determine a yt-dlp nightly download URL for this platform.");
 
         await HttpDownloadHelper.DownloadFileWithProgressAsync(_http, downloadUrl, ExecutablePath, progress, ct);
         HttpDownloadHelper.SetExecutableBitIfNeeded(ExecutablePath);
@@ -117,7 +117,7 @@ public sealed class YtDlpBinaryManager
 
     private async Task<(string? Version, string? DownloadUrl)> FetchLatestReleaseAsync(CancellationToken ct)
     {
-        using var response = await _http.GetAsync(LatestReleaseUrl, ct);
+        using var response = await _http.GetAsync(NightlyReleaseUrl, ct);
         if (!response.IsSuccessStatusCode)
             return (null, null);
 
@@ -146,8 +146,9 @@ public sealed class YtDlpBinaryManager
     }
 
     /// <summary>
-    /// yt-dlp versions are zero-padded date strings ("2024.12.06[.rev]"), so ordinal string
-    /// comparison is a safe stand-in for a real version-order comparison.
+    /// yt-dlp stable and nightly versions use zero-padded date-based strings
+    /// (for example "2026.08.19" and "2026.08.27.231323"), so ordinal string
+    /// comparison safely preserves chronological ordering.
     /// </summary>
     internal static bool IsNewer(string? latestVersion, string? currentVersion) =>
         latestVersion is not null &&
